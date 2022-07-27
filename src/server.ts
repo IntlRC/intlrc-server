@@ -1,12 +1,19 @@
+require("dotenv").config();
+
 import express from "express";
+import pino from "pino";
 
-const app = express()
-const port = 3000
+import { getOsuApi } from './api/osu';
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
+const app = express();
+const osuApi = getOsuApi();
+const logger = pino();
+
+app.get('/', (_req, res) => {
+  res.send('Hello World!');
 })
 
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  logger.info(`Server running on port ${port}`);
 })
