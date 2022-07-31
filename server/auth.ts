@@ -27,7 +27,7 @@ const makeAuthStrategy = (clientId: string, clientSecret: string) =>
       tokenURL: "https://osu.ppy.sh/oauth/token",
       clientID: clientId,
       clientSecret: clientSecret,
-      callbackURL: "http://localhost:3000/auth/osu/callback",
+      callbackURL: "https://intlrc.herokuapp.com/auth/osu/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       const me: any = await fetch("https://osu.ppy.sh/api/v2/me", {
