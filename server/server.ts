@@ -2,7 +2,9 @@ require("dotenv").config();
 
 import express from "express";
 import pino from "pino";
+import passport from 'passport';
 import session from "express-session";
+import sslRedirect from "heroku-ssl-redirect";
 import MongoStore from "connect-mongo";
 
 import api from "./api";
@@ -13,6 +15,10 @@ const app = express();
 const logger = pino();
 const clientPromise = db.init();
 
+app.set("trust proxy", true);
+app.use(sslRedirect());
+app.use(express.json());
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET!,
@@ -21,6 +27,9 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('*', (req, res, next) => {
   if (req.headers.host!.slice(0, 4) === "www.") {

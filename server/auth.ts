@@ -27,7 +27,7 @@ const makeAuthStrategy = (clientId: string, clientSecret: string) =>
       tokenURL: "https://osu.ppy.sh/oauth/token",
       clientID: clientId,
       clientSecret: clientSecret,
-      callbackURL: "/auth/osu/callback",
+      callbackURL: "http://localhost:3000/auth/osu/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       const me: any = await fetch("https://osu.ppy.sh/api/v2/me", {
@@ -57,7 +57,7 @@ const makeAuthStrategy = (clientId: string, clientSecret: string) =>
     }
   );
 
-const getStrategy = (req) => (req.hostname === "tournaments.dannypx.com" ? "tournaments.dannypx" : "default");
+const getStrategy = (req) => "default";
 
 if (true) {
   passport.use("default", makeAuthStrategy(process.env.SECRET_ID!, process.env.SECRET_CLIENT!));
@@ -71,10 +71,7 @@ if (true) {
     done(null, user);
   });
 
-  router.get("/login", (req, res) => {
-    logger.info("Got into login");
-    passport.authenticate(getStrategy(req))(req, res);
-  });
+  router.get("/login", (req, res) => passport.authenticate(getStrategy(req))(req, res));
 
   router.get("/logout", (req: any, res) => {
     req.logout();
